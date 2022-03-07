@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <stdio.h>
-#include <ctime>
+
 using namespace std;
 
 /*test commentaire*/
@@ -56,7 +56,7 @@ matrice::matrice(int li, int col)
             this->col=col;
             this->val=val;
           tab=new double *[li];
-          for(int i = 0;i < col;++i) tab[i] = new double[li];
+          for(int i = 0;i < li;++i) tab[i] = new double[col];
            //tab=  tab[li][col];
             cout<<"saisie des termes de la matrice "<<li<<"*"<<col<<endl;
             for(int i=0;i<li;i++)
@@ -64,7 +64,8 @@ matrice::matrice(int li, int col)
                     for(int j=0;j<col;j++)
                     {
                     cout<<"ligne "<<i+1<<"  colonne  "<<j+1<<"   ";
-                    scanf("%lg",&val);
+                    scanf("%lf",&val);
+                    //cin>>val;
                     tab[i][j]=val;                   
                     }
             }
@@ -148,13 +149,9 @@ matrice matrice::operator+(const matrice &m1)
         int n=m1.li;
         int p=m1.col;
         matrice r(n , p,0);
-        this->tab= tab;
-        //cout<<li<<endl;
+        //this->tab= tab;
         
-        if(n!=li||p!=col) 
-        	{ cout<<"Erreur; dimensions incompatibles     "<<endl ;
-       		}
-        else
+        if(n==li&&p==col) 
         	{
 			
 			for(int i=0; i<n; i++)
@@ -166,10 +163,17 @@ matrice matrice::operator+(const matrice &m1)
                 	}
                  
          		}
-       			
-
+       		//cout<<"Resultat:   "<<endl;
+		   return(r);	
 			}
-return r;			
+        else
+        	{ cout<<"Erreur; dimensions incompatibles     "<<endl ;
+        	exit(EXIT_FAILURE);
+       		}
+    
+        	
+
+		
 }
 
        
@@ -178,7 +182,7 @@ int main(int argc, char *argv[])
 
 {   //utilisation des différents constructeurs
 int l;int c;
-printf("Entrez le nombre l de lignes et le nombre c de colonnes: ");
+cout<<"Entrez le nombre l de lignes et le nombre c de colonnes: "<<endl;
 cout<<"lignes";
 cin>>l;
 cout<<"colonnes";
@@ -190,6 +194,7 @@ cin>>c;
 	A.afficher(); 
     //p.afficher();
     q.afficher();
+    A+q;
     matrice x=A+q;
     x.afficher(); // affiche même si l'opération est impossible !!!!
     //x.save();
