@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <stdio.h>
+#include <fstream>
 
 using namespace std;
 
@@ -49,12 +50,13 @@ matrice operator+(const matrice &m1);
 
  //saisie manuelle d'une matrice
  // voir https://www.developpez.net/forums/d1198207/c-cpp/cpp/debuter/exercice-matrice-cpp/
-matrice::matrice(int li, int col)
-           //li(n),col(p)                    //variante amusante !!                        
+ 
+matrice::matrice(const int li, const int col)
+                              
 {
-           this->li=li;
+            this->li=li; 
             this->col=col;
-            this->val=val;
+            //this->val=val;  ligne inutile
           tab=new double *[li];
           for(int i = 0;i < li;++i) tab[i] = new double[col];
            //tab=  tab[li][col];
@@ -71,6 +73,7 @@ matrice::matrice(int li, int col)
             }
             
 }
+
 
 //matrice  pleine de val 
 matrice::matrice(int li, int col, double val) 
@@ -118,41 +121,69 @@ void matrice::afficher()
       } 
 cout<<endl;     
 } 
-
+/*
 //enregistrer une matrice dans un fichier
-//void matrice::save()
-//{       FILE *P_FICHIER; /* pointeur sur FILE (FILE est une structure)*/
-/*        char NOM_FICHIER[30];
+void matrice::save()
+{       FILE *P_FICHIER; // pointeur sur FILE (FILE est une structure)
+        char NOM_FICHIER[30];
         int  NB_ENREG;
 
         //Créer et remplir le fichier 
         printf("Entrez le nom du fichier à créer : ");
         scanf("%s", NOM_FICHIER);
-        P_FICHIER = fopen(NOM_FICHIER, "w");  /* write */  
-  /*      NB_ENREG=li*col;
+        P_FICHIER = fopen(NOM_FICHIER, "w");  // write  
+        NB_ENREG=li*col;
          
         for(int i=0;i<li;i++)
         {
           for(int j=0;j<col;j++)
           {    
           val=tab[i][j];
+          cout<<val<<endl;
           fprintf(P_FICHIER, "%Lf\n",val);
           }
          }
          fclose(P_FICHIER);
 }
- */    
-                         
+*/     
+ void matrice::save()
+{       
+        char NOM_FICHIER[30];
+        int  NB_ENREG;
+        printf("Entrez le nom du fichier à créer : ");
+        scanf("%s", NOM_FICHIER);
+  ofstream FICHIER(NOM_FICHIER, ios::out | ios::trunc);  // ouverture en écriture avec effacement du fichier ouvert
+ 
+        if(!FICHIER.is_open())
+        cout << "Impossible d'ouvrir le fichier en écriture !" << endl;
+        else
+        {
+ 			for(int i=0;i<li;i++)
+        	{
+          	for(int j=0;j<col;j++)
+          		{    
+          		val=this->tab[i][j];
+          		cout<<val<<endl;
+          	
+          		FICHIER<<val<<"	";
+    			}
+    		}
+           FICHIER.close();  
+		}
+		
+}
 //somme de matrices
 matrice matrice::operator+(const matrice &m1)  
 {
         int n=m1.li;
         int p=m1.col;
-        matrice r(n , p,0);
-        //this->tab= tab;
+        matrice r(n,p,0);
+        
+        cout<<li<<endl;  //li et col sont les dimensions de la matrice A
+        cout<<col<<endl;
         
         if(n==li&&p==col) 
-        	{
+        	{cout<<"bonjour    "<<endl;
 			
 			for(int i=0; i<n; i++)
         		{
@@ -163,7 +194,7 @@ matrice matrice::operator+(const matrice &m1)
                 	}
                  
          		}
-       		//cout<<"Resultat:   "<<endl;
+       		cout<<"Resultat:   "<<endl;
 		   return(r);	
 			}
         else
@@ -194,10 +225,10 @@ cin>>c;
 	A.afficher(); 
     //p.afficher();
     q.afficher();
-    A+q;
+    
     matrice x=A+q;
-    x.afficher(); // affiche même si l'opération est impossible !!!!
-    //x.save();
+    x.afficher(); 
+    x.save();
     system("pause");
     return 0;
 }
