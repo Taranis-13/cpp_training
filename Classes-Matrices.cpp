@@ -37,6 +37,8 @@ void afficher();
 //enregistrer une matrice dans un fichier
 void save();
 
+// importation d'une matrice
+void read();
 //......................................................
 //somme de matrices
 
@@ -149,15 +151,16 @@ void matrice::save()
  void matrice::save()
 {       
         char NOM_FICHIER[30];
-        int  NB_ENREG;
+        //int  NB_ENREG;
         printf("Entrez le nom du fichier à créer : ");
-        scanf("%s", NOM_FICHIER);
+        //scanf("%s", NOM_FICHIER);
+        cin>>NOM_FICHIER;
   ofstream FICHIER(NOM_FICHIER, ios::out | ios::trunc);  // ouverture en écriture avec effacement du fichier ouvert
  
         if(!FICHIER.is_open())
         cout << "Impossible d'ouvrir le fichier en écriture !" << endl;
         else
-        {
+        {	FICHIER<<li<<"	"<<col<<"	";  //enregistrement du nombre de lignes et de colonnes
  			for(int i=0;i<li;i++)
         	{
           	for(int j=0;j<col;j++)
@@ -165,13 +168,49 @@ void matrice::save()
           		val=this->tab[i][j];
           		cout<<val<<endl;
           	
-          		FICHIER<<val<<"	";
+          		FICHIER<<val<<"	";  // enregistrement de termes de la matrice; délimiteur tab
     			}
     		}
            FICHIER.close();  
-		}
-		
+		}		
 }
+
+// importation d'une matrice d'un fichier texte
+void matrice::read()
+{
+	char NOM_FICHIER[30];	
+	
+ 	printf("Entrez le nom du fichier à ouvrir : ");
+ 
+ 	ifstream FICHIER(NOM_FICHIER);
+ 	
+ 	if(!FICHIER.is_open())
+ 		cout << "Impossible d'ouvrir le fichier en lecture !" << endl;
+ 	else
+ 		{ FICHIER>>li>>col;
+ 		cout<<li<<"	"<<col<<endl;
+ 		tab=new double *[li];
+          for(int i = 0;i < col;++i) tab[i] = new double[li];
+            
+            for(int i=0;i<li;i++)
+            {
+                    for(int j=0;j<col;j++)
+                    {
+                   
+                    FICHIER>>tab[i][j];                   
+                    }
+            }
+ 		
+ 		
+ 		
+		 }
+ 	
+ 	
+ 	
+ 
+ 	FICHIER.close(); 
+}
+
 //somme de matrices
 matrice matrice::operator+(const matrice &m1)  
 {
@@ -229,6 +268,10 @@ cin>>c;
     matrice x=A+q;
     x.afficher(); 
     x.save();
-    system("pause");
+    //system("pause");
+    matrice y(2,2,0);
+    y.read();
+    y.afficher();
+    
     return 0;
 }
