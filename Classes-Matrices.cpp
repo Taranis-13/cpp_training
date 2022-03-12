@@ -88,7 +88,7 @@ matrice::matrice(int li, int col, double val)
 {
             this->li=li;
             this->col=col;
-            this->val=val;
+            this->val=val+2;
            tab=new double *[li];
           for(int i = 0;i < col;++i) tab[i] = new double[li];
             
@@ -121,7 +121,7 @@ void matrice::afficher()
       {               for(int j=0;j<col;j++)
                       
                       {
-                      cout<<tab[i][j]; 
+                      cout<<tab[i][j]<<"   "; 
                       
                       }
       cout<<endl;
@@ -183,10 +183,10 @@ void matrice::read()
                     }
             }
  		
- 		for( int i=0; i<col; i ++) //destruction
+ /*	for( int i=0; i<col; i ++) //destruction
       delete[] tab[i];
       
-   delete[] tab;
+   delete[] tab;*/
  		
 		 } 
  	FICHIER.close(); 
@@ -203,8 +203,7 @@ matrice matrice::operator+(const matrice &m1)
         cout<<col<<endl;
         
         if(n==li&&p==col) 
-        	{cout<<"bonjour    "<<endl;
-			
+        	{
 			for(int i=0; i<n; i++)
         		{
                 for(int j=0; j<p; j++)
@@ -242,10 +241,10 @@ cin>>c;
     matrice x=A+q;  		// somme de matrices 
     x.afficher(); 			//résultat
     x.save();				// pour enregistrer dans un fichier .txt
-    //system("pause");
-    //matrice y(2,2,0);   // il faut dimensionner avant d'importer
-    matrice y;
-    y.read();
+    
+    
+    matrice y;  // plus besoin de dimensionner
+    y.read();	// prendre le fichier Mat55.txt
     y.afficher();
     
     return 0;
