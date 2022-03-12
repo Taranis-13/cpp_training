@@ -18,8 +18,10 @@ public:
 //Quelques constructeurs
 
  //saisie manuelle d'une matrice
- matrice(int , int );            
-
+ matrice(int , int );  
+ 
+ // déclaration d'une matrice de dimensions inconnues         
+matrice();
 
 //matrice  pleine de val 
 matrice(int li, int col, double val);           
@@ -49,6 +51,10 @@ matrice operator+(const matrice &m1);
 //********************************************************
 
 //Quelques constructeurs
+
+matrice::matrice(void)
+{
+}
 
  //saisie manuelle d'une matrice
  // voir https://www.developpez.net/forums/d1198207/c-cpp/cpp/debuter/exercice-matrice-cpp/
@@ -102,8 +108,7 @@ matrice::matrice(int li, int col, double val)
 matrice::~matrice()               
 {
             delete[] tab;
-            //cout<<"destruction"<<endl;
-            //system("pause");
+            
 } 
 
 //********************************************************* 
@@ -123,37 +128,14 @@ void matrice::afficher()
       } 
 cout<<endl;     
 } 
-/*
-//enregistrer une matrice dans un fichier
-void matrice::save()
-{       FILE *P_FICHIER; // pointeur sur FILE (FILE est une structure)
-        char NOM_FICHIER[30];
-        int  NB_ENREG;
 
-        //Créer et remplir le fichier 
-        printf("Entrez le nom du fichier à créer : ");
-        scanf("%s", NOM_FICHIER);
-        P_FICHIER = fopen(NOM_FICHIER, "w");  // write  
-        NB_ENREG=li*col;
-         
-        for(int i=0;i<li;i++)
-        {
-          for(int j=0;j<col;j++)
-          {    
-          val=tab[i][j];
-          cout<<val<<endl;
-          fprintf(P_FICHIER, "%Lf\n",val);
-          }
-         }
-         fclose(P_FICHIER);
-}
-*/     
+//enregistrer une matrice dans un fichier
+    
  void matrice::save()
 {       
         char NOM_FICHIER[30];
-        //int  NB_ENREG;
-        printf("Entrez le nom du fichier à créer : ");
-        //scanf("%s", NOM_FICHIER);
+        
+        printf("Entrez le nom du fichier à créer; n'oubliez pas ***.txt : ");
         cin>>NOM_FICHIER;
   ofstream FICHIER(NOM_FICHIER, ios::out | ios::trunc);  // ouverture en écriture avec effacement du fichier ouvert
  
@@ -180,14 +162,14 @@ void matrice::read()
 {
 	char NOM_FICHIER[30];	
 	
- 	printf("Entrez le nom du fichier à ouvrir : ");
- 
+ 	cout<<"Entrez le nom du fichier à ouvrir : ";
+ 	cin>>NOM_FICHIER;
  	ifstream FICHIER(NOM_FICHIER);
  	
  	if(!FICHIER.is_open())
  		cout << "Impossible d'ouvrir le fichier en lecture !" << endl;
  	else
- 		{ FICHIER>>li>>col;
+ 		{ FICHIER>>li>>col;   // importation des dimensions de la matrice
  		cout<<li<<"	"<<col<<endl;
  		tab=new double *[li];
           for(int i = 0;i < col;++i) tab[i] = new double[li];
@@ -201,13 +183,12 @@ void matrice::read()
                     }
             }
  		
+ 		for( int i=0; i<col; i ++) //destruction
+      delete[] tab[i];
+      
+   delete[] tab;
  		
- 		
-		 }
- 	
- 	
- 	
- 
+		 } 
  	FICHIER.close(); 
 }
 
@@ -239,14 +220,10 @@ matrice matrice::operator+(const matrice &m1)
         else
         	{ cout<<"Erreur; dimensions incompatibles     "<<endl ;
         	exit(EXIT_FAILURE);
-       		}
-    
-        	
-
-		
+       		}		
 }
 
-       
+ //********************************************************************************      
 //Le main      
 int main(int argc, char *argv[])
 
@@ -258,18 +235,16 @@ cin>>l;
 cout<<"colonnes";
 cin>>c;
 
-    matrice A(l,c);                
-    //matrice p(2,2);
-    matrice q(2,2,1); // matrice pleine de 1
+    matrice A(l,c);  		// pour saisie manuelle              
+    matrice q(2,2,1); 		// matrice pleine de 1 de dimension 2*2
 	A.afficher(); 
-    //p.afficher();
     q.afficher();
-    
-    matrice x=A+q;
-    x.afficher(); 
-    x.save();
+    matrice x=A+q;  		// somme de matrices 
+    x.afficher(); 			//résultat
+    x.save();				// pour enregistrer dans un fichier .txt
     //system("pause");
-    matrice y(2,2,0);
+    //matrice y(2,2,0);   // il faut dimensionner avant d'importer
+    matrice y;
     y.read();
     y.afficher();
     
