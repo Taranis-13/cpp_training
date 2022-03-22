@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <fstream>
 #include <stdexcept>
+#include <cstring>
 using namespace std;
 
 /*test commentaire*/
@@ -66,10 +67,10 @@ matrice::matrice( int li,  int col)
 {		
             this->li=li; 
             this->col=col;
-           
+            //this->val=val;  ligne inutile
           tab=new double *[li];
           for(int i = 0;i < li;++i) tab[i] = new double[col];
-          
+           //tab=  tab[li][col];
             cout<<"saisie des termes de la matrice "<<li<<"*"<<col<<endl;
             for(int i=0;i<li;i++)
             {
@@ -83,7 +84,6 @@ matrice::matrice( int li,  int col)
             }
             
 }
-
 
 //matrice  pleine de val 
 matrice::matrice(int li, int col, double val) 
@@ -103,7 +103,6 @@ matrice::matrice(int li, int col, double val)
                     }
             }
 } 
-
 
 
 //destructeur                         
@@ -135,62 +134,62 @@ cout<<endl;
 // les deux premières valeurs sont les dimensions de la matrice;  
  void matrice::save()
 {       
-        char NOM_FICHIER[30];
+    char NOM_FICHIER[30];
         
-        printf("Entrez le nom du fichier à créer; n'oubliez pas ***.txt : ");
-        cin>>NOM_FICHIER;
-  ofstream FICHIER(NOM_FICHIER, ios::out | ios::trunc);  // ouverture en écriture avec effacement du fichier ouvert
+    cout<<"Entrez le nom du fichier à créer; n'oubliez pas ***.txt : ";
+    cin>>NOM_FICHIER;
+  	ofstream FICHIER(NOM_FICHIER, ios::out | ios::trunc);  // ouverture en écriture avec effacement du fichier ouvert
  
         if(!FICHIER.is_open())
         cout << "Impossible d'ouvrir le fichier en écriture !" << endl;
         else
-        {	FICHIER<<li<<"	"<<col<<"	";  //enregistrement du nombre de lignes et de colonnes /FICHIER<<li<<"	"<<col<<"\n";
- 			for(int i=0;i<li;i++)
+        {	FICHIER<<li<<"	"<<col<<"\n";  //enregistrement du nombre de lignes et de colonnes /FICHIER<<li<<"	"<<col<<"\n";
+ 		for(int i=0;i<li;i++)
         	{
-          	for(int j=0;j<col;j++)
+          	for(int j=0;j<col-1;j++)
           		{    
           		val=this->tab[i][j];
-          		cout<<val<<endl;
-          	
-          		FICHIER<<val<<"	";  // enregistrement de termes de la matrice; délimiteur tab
+          		//cout<<val<<endl;		// affichage provisoire         	
+          		FICHIER<<val<<"	";  	// enregistrement de la ligne i; délimiteur tab
     			}
+    			val=this->tab[i][col-1];
+    			FICHIER<<val<<"\n";		//enregistrement du dernier terme de le ligne i et saut de ligne
     		}
            FICHIER.close();  
 		}		
 }
 
 // importation d'une matrice d'un fichier texte
-
+// 
 void matrice::read()
 {
-	char NOM_FICHIER[30];	
+	char NOM_FICHIER[20];	
 	
  	cout<<"Entrez le nom du fichier à ouvrir : ";
  	cin>>NOM_FICHIER;
  	ifstream FICHIER(NOM_FICHIER);
- 	
- 	
+ 	cout<<"Lecture du fichier:     ";
  	if(!FICHIER.is_open())
  		cout << "Impossible d'ouvrir le fichier en lecture !" << endl;
  	else
- 		{ FICHIER>>li>>col;   // importation des dimensions de la matrice
+ 		{
+ 		
+ 		 FICHIER>>li>>col;   			// importation des dimensions de la matrice
  		cout<<li<<"	"<<col<<endl;
  		tab=new double *[li];
-          for(int i = 0;i < li;++i) tab[i] = new double[col];
-            
-            for(int i=0;i<li;i++)
+        for(int i = 0;i <li;++i) tab[i] = new double[col];
+ 		
+		 for(int i=0;i<li;i++)
             {
-                    for(int j=0;j<col;j++)
-                    {
+            for(int j=0;j<col;j++)
+                {
                    
-                    FICHIER>>tab[i][j];                   
-                    }
+                FICHIER>>tab[i][j];                   
+                }
             }
- 		 		
-		 } 
  	FICHIER.close(); 
+		}		
 }
-
 //somme de matrices
 matrice matrice::operator+(const matrice &m1)  
 {
@@ -217,7 +216,7 @@ matrice matrice::operator+(const matrice &m1)
 		   	
 			}
         else
-        	{ throw invalid_argument("Erreur; dimensions incompatibles     ");    // à perfectionner  	
+        	{ throw invalid_argument("Erreur; dimensions incompatibles     ");    
         	
         	}
 }
@@ -260,57 +259,24 @@ matrice matrice::operator*(const matrice &m1)
  //********************************************************************************      
 //Le main      
 int main(int argc, char *argv[])
-/*int l;int c;
-cout<<"Entrez le nombre l de lignes et le nombre c de colonnes: "<<endl;
-cout<<"lignes";
-cin>>l;
-cout<<"colonnes";
-cin>>c;*/
-{   //utilisation des différents constructeurs
 
-
-    matrice A(2,2);  		// pour saisie manuelle              
-	A.afficher(); 
-	matrice B(2,2);			// (2,2) pour aucune erreur; (2,3) erreur dans somme ; (3,2) erreur à somme et produit
+{   cout<<"Ce petit programme vous permet d'importer deux matrices A et B des fichiers A.txt et B.txt"<<endl;
+cout<<"Ensuite la somme A+B et le produit A*B seront calculés; vous pourrez enregistrer les rsultats"<<endl;
+matrice A;  
+    A.read();
+    A.afficher();
+matrice B;
+	B.read();
 	B.afficher();
 	
-	matrice q(2,2,1); 		// matrice pleine de 1 de dimension 2*2
-    q.afficher();
-try {
-    matrice x=A+B;  		// somme de matrices avec gestion d'exeptions 
-    x.afficher(); 			//résultat
-    x.save();				// pour enregistrer dans un fichier .txt
-	}
-catch (invalid_argument& e)	// gestion de l'exception
-	{
-		cerr << e.what() << endl;
-        cout<<"Try again with right values: l=2, c=2   "<<endl;
-        
-        matrice C(2,2);
-        matrice x=A+C;  		// somme de matrices 
-    	x.afficher(); 			//résultat
-	}
-
-   /* Importetion de matrice */    
-    matrice y;  
-    y.read();	// prendre le fichier Mat55.txt ; y matrice carrée 5*5
-    y.afficher();
-    matrice s=y+y;
-    s.afficher();
+matrice S=A+B;   
+    S.afficher();
     
-try{
-    	matrice z=A*y;// un produit A*B
-    	z.afficher();
-	}
-catch (invalid_argument& e)	// gestion de l'exception		
-	{
-		cerr << e.what() << endl;
-        cout<<"Try again with right values:  c=nombre de colonnes de y   "<<endl;
-        
-        matrice C(2,4);
-        matrice z=A*C;  		// somme de matrices 
-    	z.afficher(); 			//résultat
-	}	
-	
-return(0);
+matrice P=A*B;	
+	P.afficher();
+cout<<"Enregitremet des résultats dans les fichiers S.txt et P.txt (ou autres .txt selon votre choix "<<endl;
+S.save();
+P.save();
+
+return(0) ;
 }
